@@ -6,11 +6,13 @@ namespace ClassLibrary
 {
     public class MenuOptions
     {
+        // good declaration of variables
         private int SelectedIndex;
         private string[] Options;
         private string Prompt;
         private bool IsMainMenu;
 
+        // Needs documentation
         public MenuOptions(string prompt, string[] options, bool isMainMenu)
         {
             Prompt = prompt;
@@ -40,6 +42,10 @@ namespace ClassLibrary
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
+                // I don't totally understand this if else statement.  I would add a comment to explain what is happening here.
+                // Not sure how you could have a null value for your IsMainMenu variable. Its either in the main menu or not.
+                // if you drop that last if you could just do the following: int padding = IsMainMenu ? 99 : 97
+                // then you could just do Console.WriteLine($"{prefix} << {currentOption} >> {prefix}".PadLeft(padding));
                 if (currentOption == Options[1] && IsMainMenu == true)
                 {
                     Console.WriteLine($"{prefix} << {currentOption} >> {prefix}".PadLeft(99));                   
