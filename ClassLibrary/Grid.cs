@@ -1,23 +1,28 @@
-﻿using ClassLibrary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /// <summary>
+    /// NEED DOCUMENTATION
+    /// </summary>
     public class Grid
-    {   
+    {
         private List<string> PlayerGridSelections;
         private List<string> HitTargets;
         private List<string> MissedTargets;
         private string CurrentTarget;
-  
-        public Grid([Optional] List<string> playerGridSelections, [Optional] List<string> hitTargets, 
+
+        /// <summary>
+        /// DOCUMENT ME!!!!
+        /// </summary>
+        /// <param name="playerGridSelections"></param>
+        /// <param name="hitTargets"></param>
+        /// <param name="missedTargets"></param>
+        /// <param name="currentTarget"></param>
+        public Grid([Optional] List<string> playerGridSelections, [Optional] List<string> hitTargets,
             [Optional] List<string> missedTargets, [Optional] string currentTarget)
         {
             PlayerGridSelections = playerGridSelections;
@@ -44,9 +49,12 @@ namespace ClassLibrary
             "E1", "E2", "E3", "E4", "E5",
         };
 
+        // There is a ton happening in this one method.  You should break it up into smaller methods or helper methods that do a singular task and can be reused.
+        // Your larger player grid methods could be for loops that map this and in helper functions then this create grid function would be much cleaner and easier to read.
         public void CreateGrid()
         {
-            var grid = new[]
+            // This could be optimized no need to write it all out like this. You could use a loop to generate the grid.
+            string[][] grid = new[]
             {
                 new[] {"   ", "  1", "  2", "  3", "  4", "  5"},
                 new[] {"  A", "   ", "   ", "   ", "   ", "   "},
@@ -55,287 +63,66 @@ namespace ClassLibrary
                 new[] {"  D", "   ", "   ", "   ", "   ", "   "},
                 new[] {"  E", "   ", "   ", "   ", "   ", "   "}
             };
+            // I did not figure this out on my own definitely some chat GPT on this part but I totally get why you would be mapping without it to learn.
+            Dictionary<string, (int, int)> gridMapping = new Dictionary<string, (int, int)>
+            {
+                { "A1", (1, 1) }, { "A2", (1, 2) }, { "A3", (1, 3) }, { "A4", (1, 4) }, { "A5", (1, 5) },
+                { "B1", (2, 1) }, { "B2", (2, 2) }, { "B3", (2, 3) }, { "B4", (2, 4) }, { "B5", (2, 5) },
+                { "C1", (3, 1) }, { "C2", (3, 2) }, { "C3", (3, 3) }, { "C4", (3, 4) }, { "C5", (3, 5) },
+                { "D1", (4, 1) }, { "D2", (4, 2) }, { "D3", (4, 3) }, { "D4", (4, 4) }, { "D5", (4, 5) },
+                { "E1", (5, 1) }, { "E2", (5, 2) }, { "E3", (5, 3) }, { "E4", (5, 4) }, { "E5", (5, 5) }
+            };
 
             if (PlayerGridSelections != null)
             {
-
-                //Switch case for each player grid selection string
-                for ( int i = 0; i < PlayerGridSelections.Count; i++)
+                // I would avoid massive switch statements like the above.  You just need a clever way to map the grid selection to the grid
+                // Here is an example.
+                // Switch case for each player grid selection string
+                foreach (string selection in PlayerGridSelections)
                 {
-                    switch (PlayerGridSelections[i])
+                    if (gridMapping.TryGetValue(selection, out var position))
                     {
-                        case "A1":
-                            grid[1][1] = "  X";
-                            break;
-                        case "A2":
-                            grid[1][2] = "  X";
-                            break;
-                        case "A3":
-                            grid[1][3] = "  X";
-                            break;
-                        case "A4":
-                            grid[1][4] = "  X";
-                            break;
-                        case "A5":
-                            grid[1][5] = "  X";
-                            break;
-
-                        case "B1":
-                            grid[2][1] = "  X";
-                            break;
-                        case "B2":
-                            grid[2][2] = "  X";
-                            break;
-                        case "B3":
-                            grid[2][3] = "  X";
-                            break;
-                        case "B4":
-                            grid[2][4] = "  X";
-                            break;
-                        case "B5":
-                            grid[2][5] = "  X";
-                            break;
-
-                        case "C1":
-                            grid[3][1] = "  X";
-                            break;
-                        case "C2":
-                            grid[3][2] = "  X";
-                            break;
-                        case "C3":
-                            grid[3][3] = "  X";
-                            break;
-                        case "C4":
-                            grid[3][4] = "  X";
-                            break;
-                        case "C5":
-                            grid[3][5] = "  X";
-                            break;
-
-                        case "D1":
-                            grid[4][1] = "  X";
-                            break;
-                        case "D2":
-                            grid[4][2] = "  X";
-                            break;
-                        case "D3":
-                            grid[4][3] = "  X";
-                            break;
-                        case "D4":
-                            grid[4][4] = "  X";
-                            break;
-                        case "D5":
-                            grid[4][5] = "  X";
-                            break;
-
-                        case "E1":
-                            grid[5][1] = "  X";
-                            break;
-                        case "E2":
-                            grid[5][2] = "  X";
-                            break;
-                        case "E3":
-                            grid[5][3] = "  X";
-                            break;
-                        case "E4":
-                            grid[5][4] = "  X";
-                            break;
-                        case "E5":
-                            grid[5][5] = "  X";
-                            break;
+                        grid[position.Item1][position.Item2] = "  X";
                     }
                 }
             }
-
+            // Now that this code is reduced you can see that you are repeating your logic a bit on player selection and hit targets.  You could combine these into one loop.
+            // Or create a helper function that does the logic for you.
             if (HitTargets != null)
             {
-                //Switch case for each player hit target string
-                for (int i = 0; i < HitTargets.Count; i++)
+                foreach (string hitTarget in HitTargets)
                 {
-                    switch (HitTargets[i])
+                    if (gridMapping.TryGetValue(hitTarget, out var position))
                     {
-                        case "A1":
-                            grid[1][1] = "  X";
-                            break;
-                        case "A2":
-                            grid[1][2] = "  X";
-                            break;
-                        case "A3":
-                            grid[1][3] = "  X";
-                            break;
-                        case "A4":
-                            grid[1][4] = "  X";
-                            break;
-                        case "A5":
-                            grid[1][5] = "  X";
-                            break;
-
-                        case "B1":
-                            grid[2][1] = "  X";
-                            break;
-                        case "B2":
-                            grid[2][2] = "  X";
-                            break;
-                        case "B3":
-                            grid[2][3] = "  X";
-                            break;
-                        case "B4":
-                            grid[2][4] = "  X";
-                            break;
-                        case "B5":
-                            grid[2][5] = "  X";
-                            break;
-
-                        case "C1":
-                            grid[3][1] = "  X";
-                            break;
-                        case "C2":
-                            grid[3][2] = "  X";
-                            break;
-                        case "C3":
-                            grid[3][3] = "  X";
-                            break;
-                        case "C4":
-                            grid[3][4] = "  X";
-                            break;
-                        case "C5":
-                            grid[3][5] = "  X";
-                            break;
-
-                        case "D1":
-                            grid[4][1] = "  X";
-                            break;
-                        case "D2":
-                            grid[4][2] = "  X";
-                            break;
-                        case "D3":
-                            grid[4][3] = "  X";
-                            break;
-                        case "D4":
-                            grid[4][4] = "  X";
-                            break;
-                        case "D5":
-                            grid[4][5] = "  X";
-                            break;
-
-                        case "E1":
-                            grid[5][1] = "  X";
-                            break;
-                        case "E2":
-                            grid[5][2] = "  X";
-                            break;
-                        case "E3":
-                            grid[5][3] = "  X";
-                            break;
-                        case "E4":
-                            grid[5][4] = "  X";
-                            break;
-                        case "E5":
-                            grid[5][5] = "  X";
-                            break;
+                        grid[position.Item1][position.Item2] = "  X";
                     }
                 }
             }
 
             if (MissedTargets != null)
             {
-
-                //Switch case for each player missed target string
-                for (int i = 0; i < MissedTargets.Count; i++)
+                foreach (string missedTarget in MissedTargets)
                 {
-                    switch (MissedTargets[i])
+                    if (gridMapping.TryGetValue(missedTarget, out var position))
                     {
-                        case "A1":
-                            grid[1][1] = "  O";
-                            break;
-                        case "A2":
-                            grid[1][2] = "  O";
-                            break;
-                        case "A3":
-                            grid[1][3] = "  O";
-                            break;
-                        case "A4":
-                            grid[1][4] = "  O";
-                            break;
-                        case "A5":
-                            grid[1][5] = "  O";
-                            break;
-
-                        case "B1":
-                            grid[2][1] = "  O";
-                            break;
-                        case "B2":
-                            grid[2][2] = "  O";
-                            break;
-                        case "B3":
-                            grid[2][3] = "  O";
-                            break;
-                        case "B4":
-                            grid[2][4] = "  O";
-                            break;
-                        case "B5":
-                            grid[2][5] = "  O";
-                            break;
-
-                        case "C1":
-                            grid[3][1] = "  O";
-                            break;
-                        case "C2":
-                            grid[3][2] = "  O";
-                            break;
-                        case "C3":
-                            grid[3][3] = "  O";
-                            break;
-                        case "C4":
-                            grid[3][4] = "  O";
-                            break;
-                        case "C5":
-                            grid[3][5] = "  O";
-                            break;
-
-                        case "D1":
-                            grid[4][1] = "  O";
-                            break;
-                        case "D2":
-                            grid[4][2] = "  O";
-                            break;
-                        case "D3":
-                            grid[4][3] = "  O";
-                            break;
-                        case "D4":
-                            grid[4][4] = "  O";
-                            break;
-                        case "D5":
-                            grid[4][5] = "  O";
-                            break;
-
-                        case "E1":
-                            grid[5][1] = "  O";
-                            break;
-                        case "E2":
-                            grid[5][2] = "  O";
-                            break;
-                        case "E3":
-                            grid[5][3] = "  O";
-                            break;
-                        case "E4":
-                            grid[5][4] = "  O";
-                            break;
-                        case "E5":
-                            grid[5][5] = "  O";
-                            break;
+                        grid[position.Item1][position.Item2] = "  O";
                     }
                 }
             }
 
+            // Avoid using var at all costs.  It makes the code harder to read and understand.  Use the actual type instead.
+            // C# is a statically typed language so you should always know the type of the variable you are working with.
+            // Also, you should always use the most specific type possible.  In this case, you should use string[][] instead of var.
+
+            // You also need to document your code.  You should have a comment at the top of each method explaining what the method does.
             var rows = grid.Length;
             var cols = grid.First().Length;
             var header = $"┌{string.Join("", Enumerable.Repeat("──────┬", cols - 1))}──────┐";
-            var headExt= $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
-            var upper  = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
+            var headExt = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
+            var upper = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
             var middle = $"├{string.Join("", Enumerable.Repeat("──────┼", cols - 1))}──────┤";
-            var lower  = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
-            var footExt= $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
+            var lower = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
+            var footExt = $"│{string.Join("", Enumerable.Repeat("      │", cols - 1))}      │";
             var footer = $"└{string.Join("", Enumerable.Repeat("──────┴", cols - 1))}──────┘";
 
             Console.SetCursorPosition((Console.WindowWidth - header.Length) / 2, Console.CursorTop);
@@ -351,6 +138,9 @@ namespace ClassLibrary
                 {
 
                     //Set players hit targets to red
+
+                    // Create a constant for the string your looking for so hit targets are indicated it appears if the cell has space space X
+                    // Honestly this whole section needs some love. 
                     if (HitTargets != null && HitTargets.Count > 0 && cell == "  X")
                     {
                         Console.Write("│ ");

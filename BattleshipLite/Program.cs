@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 
 class Program
 {
-    private static List<Players> players = new List<Players>();
+    private static List<Player> players = new List<Player>();
     private static List<string> player1GridSelections = new List<string>();
     private static List<string> player2GridSelections = new List<string>();
-    private static List<Players> finalResults = new List<Players>();
+    private static List<Player> finalResults = new List<Player>();
     public static void Main()
     {
         try
@@ -18,9 +18,9 @@ class Program
             //Can only execute IsWindows() in Main
             if (OperatingSystem.IsWindows())
             {
-                SoundPlayer musicPlayer = new SoundPlayer("Background_Music.wav");
-                musicPlayer.Load();
-                musicPlayer.PlayLooping();
+                //SoundPlayer musicPlayer = new SoundPlayer("Background_Music.wav");
+                //musicPlayer.Load();
+                //musicPlayer.PlayLooping();
 
                 //Console Settings, Main Menu, and Instructions
                 newGame.Run();
@@ -28,7 +28,7 @@ class Program
                 //Get Players Name, ID, and Grid Selections
                 players = GetPlayersInfo();
 
-                musicPlayer.Stop();
+                //musicPlayer.Stop();
             }
 
             finalResults = StartGame(players);
@@ -45,11 +45,13 @@ class Program
         
     }
 
-    public static List<Players> StartGame(List<Players> players)
+    public static List<Player> StartGame(List<Player> players)
     {
 
         int hitCount = 0;
 
+        // This is a painful foreach / Do while hell loop.  I would refactor this to be more readable.
+        // Never use var ever again.
         foreach (var player in players)
         {
             if (player.PlayerID == "P1")
@@ -85,7 +87,7 @@ class Program
         return players;
     }
 
-    public static int StartPlayerIterations(Players player, List<string> player1GridSelections, List<string> player2GridSelections)
+    public static int StartPlayerIterations(Player player, List<string> player1GridSelections, List<string> player2GridSelections)
     {
         ShowHeader();
 
@@ -96,6 +98,11 @@ class Program
         Console.WriteLine("\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         Console.Write("It's your turn ");
+        // Neat thing to do,  Keep your string literals in a resource file.
+        // like P1 could be mapped to valid player IDs ,   
+        // string[] ValidPlayerIDs = { "P1", "P2", "P3" }; then you can call that here and just do ValidPlayerIDs.P1
+        // It makes it easier to update when you decide that player ID or something like this needs to be updated.  Then you update the resource file and not the code.
+        // ConsoleColor.DarkBlue is a great example.
         if (player.PlayerID == "P1")
         {
             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -157,9 +164,9 @@ class Program
         {
             if (OperatingSystem.IsWindows())
             {
-                SoundPlayer soundPlayer = new SoundPlayer("Explosion_Sound.wav");
-                soundPlayer.Load();
-                soundPlayer.Play();
+                //SoundPlayer soundPlayer = new SoundPlayer("Explosion_Sound.wav");
+                //soundPlayer.Load();
+                //soundPlayer.Play();
             }
             player.HitCount++;
 
@@ -180,9 +187,9 @@ class Program
         {
             if (OperatingSystem.IsWindows())
             {
-                SoundPlayer soundPlayer = new SoundPlayer("Explosion_Sound.wav");
-                soundPlayer.Load();
-                soundPlayer.Play();
+                //SoundPlayer soundPlayer = new SoundPlayer("Explosion_Sound.wav");
+                //soundPlayer.Load();
+                //soundPlayer.Play();
             }
             player.HitCount++;
 
@@ -214,7 +221,7 @@ class Program
         return player.HitCount;
     }
 
-    public static void DisplayGameResults(List<Players> finalResults)
+    public static void DisplayGameResults(List<Player> finalResults)
     {
         ShowResultsHeader();
 
@@ -262,7 +269,7 @@ class Program
         Console.ReadLine();
     }
 
-    public static List<Players> GetPlayersInfo()
+    public static List<Player> GetPlayersInfo()
     {
         for (int i = 1; i < 3; i++)
         {
@@ -291,7 +298,7 @@ class Program
             string name = GetInfoFromConsole(", please enter your name: ");
             List<string> gridSelections = GetGridSelections();
 
-            Players player = new Players(playerID, name, gridSelections);
+            Player player = new Player(playerID, name, gridSelections);
 
             players.Add(player);
 
