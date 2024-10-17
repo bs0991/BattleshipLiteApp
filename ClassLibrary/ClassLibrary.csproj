@@ -42,10 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game.cs" />
-    <Compile Include="MenuOptions.cs" />
-    <Compile Include="Models\Players.cs" />
-    <Compile Include="Grid.cs" />
+    <Compile Include="Builders\GridBuilder.cs" />
+    <Compile Include="Classes\Constants.cs" />
+    <Compile Include="Classes\Game.cs" />
+    <Compile Include="Builders\MenuBuilder.cs" />
+    <Compile Include="Classes\Grid.cs" />
+    <Compile Include="Classes\MenuOption.cs" />
+    <Compile Include="Classes\ConsoleHelper.cs" />
+    <Compile Include="Classes\Player.cs" />
+    <Compile Include="Models\MenuModel.cs" />
+    <Compile Include="Models\PlayerModel.cs" />
+    <Compile Include="Models\GridModel.cs" />
+    <Compile Include="Builders\PlayerBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
