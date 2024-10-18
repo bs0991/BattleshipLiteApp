@@ -34,7 +34,7 @@ A console-based **Battleship Game** built from scratch with ASP.NET Core MVC. Th
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/bs0991/BattleshipLiteApp.git
 2. **Navigate to the Project Directory:**
    ```bash
    cd your-repo-name
